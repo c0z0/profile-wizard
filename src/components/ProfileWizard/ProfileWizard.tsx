@@ -12,6 +12,7 @@ import {
 
 import FirstStep from './components/FirstStep';
 import SecondStep from './components/SecondStep';
+import Summary from './components/Summary';
 import { FirstStepSchema } from './components/FirstStep/FirstStep';
 import { SecondStepInitialValues } from './components/SecondStep/SecondStep';
 import uploadPhoto from './services/uploadPhoto';
@@ -26,8 +27,13 @@ const STEPS = [
 
 const useStyles = makeStyles((theme) => ({
   heading: {
-    marginTop: theme.spacing(12),
-    marginBottom: theme.spacing(8),
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(2),
+    [theme.breakpoints.up('md')]: {
+      marginTop: theme.spacing(12),
+      marginBottom: theme.spacing(8),
+    },
+    fontWeight: 'bold',
   },
 
   formContainer: { padding: theme.spacing(4) },
@@ -35,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ProfileWizard = () => {
   const classes = useStyles();
-  const [activeStep, setActiveStep] = useState<Step>(1);
+  const [activeStep, setActiveStep] = useState<Step>(0);
 
   const [firstStepValues, setFirstStepValues] = useState<FirstStepSchema>({
     name: '',
@@ -44,11 +50,11 @@ const ProfileWizard = () => {
   });
 
   const [secondStepValues, setSecondStepValues] = useState<
-    SecondStepInitialValues & { photoUrl: null | string }
+    SecondStepInitialValues & { profilePhotoUrl: string }
   >({
     description: '',
     profilePhoto: null,
-    photoUrl: null,
+    profilePhotoUrl: '',
   });
 
   const [secondStepLoading, setSecondStepLoading] = useState(false);
@@ -72,11 +78,11 @@ const ProfileWizard = () => {
             onSubmit={async (v) => {
               setSecondStepLoading(true);
 
-              const photoUrl = await uploadPhoto(v.profilePhoto);
+              const profilePhotoUrl = await uploadPhoto(v.profilePhoto);
 
               setSecondStepLoading(false);
 
-              setSecondStepValues({ ...v, photoUrl });
+              setSecondStepValues({ ...v, profilePhotoUrl });
 
               setActiveStep(2);
             }}
@@ -89,11 +95,11 @@ const ProfileWizard = () => {
 
       case 2: {
         return (
-          <h1>
-            {secondStepValues.photoUrl && (
-              <img src={secondStepValues.photoUrl} />
-            )}
-          </h1>
+          <Summary
+            {...firstStepValues}
+            {...secondStepValues}
+            onBack={() => setActiveStep(1)}
+          />
         );
       }
     }
@@ -101,7 +107,7 @@ const ProfileWizard = () => {
 
   return (
     <Container fixed>
-      <Typography variant="h2" className={classes.heading}>
+      <Typography variant="h3" className={classes.heading} color="primary">
         Create profile
       </Typography>
       <Card variant="outlined">

@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   fileInput: {
     display: 'none',
   },
-  buttonContainer: {
+  buttonsContainer: {
     display: 'flex',
     justifyContent: 'space-between',
     marginTop: theme.spacing(2),
@@ -148,7 +148,7 @@ const SecondStep = ({
           capitalize(errors.description)
         }
       />
-      <div className={classes.buttonContainer}>
+      <div className={classes.buttonsContainer}>
         <Button disableElevation disabled={loading} onClick={onBack}>
           Back
         </Button>

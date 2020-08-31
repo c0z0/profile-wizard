@@ -1,4 +1,5 @@
 import { createMuiTheme } from '@material-ui/core';
+import blue from '@material-ui/core/colors/blue';
 
 const theme = createMuiTheme({
   typography: {
@@ -14,6 +15,9 @@ const theme = createMuiTheme({
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
     ].join(','),
+  },
+  palette: {
+    primary: blue,
   },
 });
 
