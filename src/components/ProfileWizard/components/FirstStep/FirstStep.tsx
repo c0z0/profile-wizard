@@ -6,9 +6,6 @@ import * as yup from 'yup';
 import capitalize from '../../../../utils/capitalize';
 
 const useStyles = makeStyles((theme) => ({
-  container: {
-    padding: theme.spacing(4),
-  },
   buttonContainer: {
     display: 'flex',
     justifyContent: 'flex-end',
@@ -46,11 +43,10 @@ const FirstStep = ({ onSubmit, initialValues }: FirstStepProps) => {
     touched,
     errors,
     values,
-    isValid,
   } = useFormik({
     initialValues: {
       ...initialValues,
-      repeatPassword: '',
+      repeatPassword: initialValues.password,
     },
     validationSchema,
     onSubmit,
@@ -58,7 +54,7 @@ const FirstStep = ({ onSubmit, initialValues }: FirstStepProps) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Grid container spacing={8} className={classes.container}>
+      <Grid container spacing={8}>
         <Grid item xs={12} md={6}>
           <TextField
             fullWidth
@@ -129,7 +125,6 @@ const FirstStep = ({ onSubmit, initialValues }: FirstStepProps) => {
             disableElevation
             color="primary"
             variant="contained"
-            disabled={!isValid}
             type="submit"
           >
             Continue

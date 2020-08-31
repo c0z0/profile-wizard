@@ -11,6 +11,10 @@ import {
 } from '@material-ui/core';
 
 import FirstStep from './components/FirstStep';
+import SecondStep from './components/SecondStep';
+import { FirstStepSchema } from './components/FirstStep/FirstStep';
+import { SecondStepInitialValues } from './components/SecondStep/SecondStep';
+import uploadPhoto from './services/uploadPhoto';
 
 type Step = 0 | 1 | 2;
 
@@ -25,28 +29,72 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(12),
     marginBottom: theme.spacing(8),
   },
+
+  formContainer: { padding: theme.spacing(4) },
 }));
 
 const ProfileWizard = () => {
   const classes = useStyles();
-  const [activeStep, setActiveStep] = useState<Step>(0);
+  const [activeStep, setActiveStep] = useState<Step>(1);
+
+  const [firstStepValues, setFirstStepValues] = useState<FirstStepSchema>({
+    name: '',
+    email: '',
+    password: '',
+  });
+
+  const [secondStepValues, setSecondStepValues] = useState<
+    SecondStepInitialValues & { photoUrl: null | string }
+  >({
+    description: '',
+    profilePhoto: null,
+    photoUrl: null,
+  });
+
+  const [secondStepLoading, setSecondStepLoading] = useState(false);
 
   const getStep = (step: Step) => {
     switch (step) {
       case 0: {
         return (
           <FirstStep
-            onSubmit={() => setActiveStep(1)}
-            initialValues={{ email: '', password: '', name: '' }}
+            onSubmit={(v) => {
+              setActiveStep(1);
+              setFirstStepValues(v);
+            }}
+            initialValues={firstStepValues}
           />
         );
       }
       case 1: {
-        return <h1>2nd</h1>;
+        return (
+          <SecondStep
+            onSubmit={async (v) => {
+              setSecondStepLoading(true);
+
+              const photoUrl = await uploadPhoto(v.profilePhoto);
+
+              setSecondStepLoading(false);
+
+              setSecondStepValues({ ...v, photoUrl });
+
+              setActiveStep(2);
+            }}
+            initialValues={secondStepValues}
+            loading={secondStepLoading}
+            onBack={() => setActiveStep(0)}
+          />
+        );
       }
 
       case 2: {
-        return <h1>3rd</h1>;
+        return (
+          <h1>
+            {secondStepValues.photoUrl && (
+              <img src={secondStepValues.photoUrl} />
+            )}
+          </h1>
+        );
       }
     }
   };
@@ -65,7 +113,7 @@ const ProfileWizard = () => {
               </Step>
             ))}
           </Stepper>
-          {getStep(activeStep)}
+          <div className={classes.formContainer}>{getStep(activeStep)}</div>
         </CardContent>
       </Card>
     </Container>
