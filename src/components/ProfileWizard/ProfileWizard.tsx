@@ -27,24 +27,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function getStep(step: Step) {
-  switch (step) {
-    case 0: {
-      return <FirstStep />;
-    }
-    case 1: {
-      return <h1>2nd</h1>;
-    }
-
-    case 1: {
-      return <h1>3rd</h1>;
-    }
-  }
-}
-
 const ProfileWizard = () => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState<Step>(0);
+
+  const getStep = (step: Step) => {
+    switch (step) {
+      case 0: {
+        return (
+          <FirstStep
+            onSubmit={() => setActiveStep(1)}
+            initialValues={{ email: '', password: '', name: '' }}
+          />
+        );
+      }
+      case 1: {
+        return <h1>2nd</h1>;
+      }
+
+      case 2: {
+        return <h1>3rd</h1>;
+      }
+    }
+  };
 
   return (
     <Container fixed>
