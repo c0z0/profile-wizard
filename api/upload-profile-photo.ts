@@ -2,6 +2,12 @@ import { NowRequest, NowResponse } from '@vercel/node';
 import multiparty from 'multiparty';
 import fs from 'fs';
 
+/**
+ * Small serverless function for mocking a photo upload api. Returns the uploaded photo in base64 format,
+ * whereas a real api would return a url to the uploaded photo
+ *
+ */
+
 const allowCors = (fn) => async (req: NowRequest, res: NowResponse) => {
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');

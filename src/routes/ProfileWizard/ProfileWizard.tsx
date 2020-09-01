@@ -22,7 +22,7 @@ import FirstStep from './components/FirstStep';
 import SecondStep from './components/SecondStep';
 import Summary from './components/Summary';
 
-const STEPS = [
+const STEPS_LABELS = [
   'Enter a name, email, password',
   'Upload a profile photo and description',
   'Summary',
@@ -59,6 +59,7 @@ const ProfileWizard = () => {
 
   const dispatch = useDispatch();
 
+  // Navigate to previous step
   const onBack = () => dispatch(setActiveStep(activeStep === 2 ? 1 : 0));
 
   const getStep = (step: GlobalState['profileWizard']['activeStep']) => {
@@ -66,8 +67,8 @@ const ProfileWizard = () => {
       case 0: {
         return (
           <FirstStep
-            onSubmit={(v) => {
-              dispatch(setFirstStep(v));
+            onSubmit={(values) => {
+              dispatch(setFirstStep(values));
             }}
             initialValues={{ email, name, password }}
           />
@@ -76,7 +77,9 @@ const ProfileWizard = () => {
       case 1: {
         return (
           <SecondStep
-            onSubmit={(v) => dispatch(setSecondStep(v))}
+            onSubmit={(values) => {
+              dispatch(setSecondStep(values));
+            }}
             initialValues={{ description, profilePhoto }}
             loading={fetchingImage}
             onBack={onBack}
@@ -106,7 +109,7 @@ const ProfileWizard = () => {
       <Card variant="outlined">
         <CardContent>
           <Stepper activeStep={activeStep} alternativeLabel>
-            {STEPS.map((label) => (
+            {STEPS_LABELS.map((label) => (
               <Step key={label}>
                 <StepLabel>{label}</StepLabel>
               </Step>

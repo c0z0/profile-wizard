@@ -3,6 +3,7 @@ const uploadPhoto = async (photo: File) => {
   formData.append('photo', photo);
 
   const res = await fetch(
+    // demo deployment of the serverless function
     'https://profile-wizard.vercel.app/api/upload-profile-photo',
     {
       method: 'POST',

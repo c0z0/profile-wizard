@@ -4,7 +4,7 @@ import { ThemeProvider } from '@material-ui/core';
 
 import createStore from './store/createStore';
 
-import ProfileWizard from './components/ProfileWizard';
+import ProfileWizard from './routes/ProfileWizard';
 
 import theme from './utils/theme';
 

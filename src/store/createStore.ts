@@ -2,7 +2,7 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 
 import rootSaga from './rootSaga';
-import { reducer as profileWizard } from '../components/ProfileWizard/state/profileWizardSlice';
+import { reducer as profileWizard } from '../routes/ProfileWizard/state/profileWizardSlice';
 
 const createStore = () => {
   const sagaMiddleware = createSagaMiddleware();
