@@ -2,10 +2,13 @@ const uploadPhoto = async (photo: File) => {
   const formData = new FormData();
   formData.append('photo', photo);
 
-  const res = await fetch('/api/upload-profile-photo', {
-    method: 'POST',
-    body: formData,
-  });
+  const res = await fetch(
+    'https://profile-wizard.vercel.app/api/upload-profile-photo',
+    {
+      method: 'POST',
+      body: formData,
+    },
+  );
 
   const json = await res.json();
 
