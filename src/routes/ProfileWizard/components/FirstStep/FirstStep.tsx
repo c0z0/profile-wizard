@@ -54,7 +54,7 @@ const FirstStep = ({ onSubmit, initialValues }: FirstStepProps) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Grid container spacing={8}>
+      <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <TextField
             fullWidth

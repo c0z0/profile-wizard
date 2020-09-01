@@ -39,7 +39,12 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
   },
 
-  formContainer: { padding: theme.spacing(4) },
+  formContainer: {
+    padding: theme.spacing(4),
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(2),
+    },
+  },
 }));
 
 const ProfileWizard = () => {
