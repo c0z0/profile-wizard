@@ -14,9 +14,10 @@ import Alert from '@material-ui/lab/Alert';
 
 import GlobalState from '../../store/GlobalState';
 import {
-  setActiveStep,
+  navigateBack,
   setFirstStep,
   setSecondStep,
+  confirm,
 } from './state/profileWizardSlice';
 import FirstStep from './components/FirstStep';
 import SecondStep from './components/SecondStep';
@@ -60,12 +61,13 @@ const ProfileWizard = () => {
     profilePhoto,
     profilePhotoUrl,
     error,
+    confirmLoading,
   } = useSelector((state: GlobalState) => state.profileWizard);
 
   const dispatch = useDispatch();
 
   // Navigate to previous step
-  const onBack = () => dispatch(setActiveStep(activeStep === 2 ? 1 : 0));
+  const onBack = () => dispatch(navigateBack());
 
   const getStep = (step: GlobalState['profileWizard']['activeStep']) => {
     switch (step) {
@@ -100,6 +102,18 @@ const ProfileWizard = () => {
             profilePhotoUrl={profilePhotoUrl}
             description={description}
             onBack={onBack}
+            loading={confirmLoading}
+            onConfirm={() => {
+              dispatch(
+                confirm({
+                  email,
+                  name,
+                  password,
+                  profilePhotoUrl,
+                  description,
+                }),
+              );
+            }}
           />
         );
       }

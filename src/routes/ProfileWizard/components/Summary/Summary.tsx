@@ -6,6 +6,7 @@ import {
   makeStyles,
   Link,
   Button,
+  CircularProgress,
 } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
@@ -42,6 +43,8 @@ export type SummaryProps = {
   name: string;
   description: string;
   onBack: () => void;
+  loading: boolean;
+  onConfirm: () => void;
 };
 
 const Summary = ({
@@ -50,6 +53,8 @@ const Summary = ({
   name,
   email,
   onBack,
+  loading,
+  onConfirm,
 }: SummaryProps) => {
   const classes = useStyles();
 
@@ -68,17 +73,22 @@ const Summary = ({
         <Typography>{description}</Typography>
       </Grid>
       <Grid item xs={12} className={classes.buttonsContainer}>
-        <Button disableElevation onClick={onBack}>
+        <Button disableElevation onClick={onBack} disabled={loading}>
           Back
         </Button>
-        <Button
-          disableElevation
-          color="primary"
-          variant="contained"
-          type="submit"
-        >
-          Confirm
-        </Button>
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <Button
+            onClick={onConfirm}
+            disableElevation
+            color="primary"
+            variant="contained"
+            type="submit"
+          >
+            Confirm
+          </Button>
+        )}
       </Grid>
     </Grid>
   );

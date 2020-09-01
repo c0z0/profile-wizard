@@ -10,6 +10,7 @@ export type ProfileWizardSlice = {
   fetchingImage: boolean;
   activeStep: 0 | 1 | 2;
   error: string | null;
+  confirmLoading: boolean;
 };
 
 const initialState: ProfileWizardSlice = {
@@ -22,6 +23,7 @@ const initialState: ProfileWizardSlice = {
   fetchingImage: false,
   activeStep: 0,
   error: null,
+  confirmLoading: false,
 };
 
 export const {
@@ -29,10 +31,13 @@ export const {
   actions: {
     resetState,
     setFirstStep,
-    setActiveStep,
+    navigateBack,
     fetchImageSuccess,
     fetchImageStart,
     fetchImageError,
+    confirmStart,
+    confirmSuccess,
+    confirmError,
   },
 } = createSlice({
   name: 'profileWizard',
@@ -61,11 +66,8 @@ export const {
 
       return state;
     },
-    setActiveStep: (
-      state,
-      action: PayloadAction<ProfileWizardSlice['activeStep']>,
-    ) => {
-      state.activeStep = action.payload;
+    navigateBack: (state) => {
+      state.activeStep = state.activeStep === 2 ? 1 : 0;
 
       return state;
     },
@@ -84,6 +86,21 @@ export const {
         activeStep: 2,
       };
     },
+    confirmStart: (state) => {
+      state.error = null;
+      state.confirmLoading = true;
+    },
+    confirmSuccess: (state) => {
+      state.confirmLoading = false;
+
+      // redirect to next page?
+    },
+    confirmError: (state, action: PayloadAction<string>) => {
+      state.confirmLoading = false;
+      state.error = action.payload;
+
+      return state;
+    },
   },
 });
 
@@ -91,3 +108,11 @@ export const setSecondStep = createAction<{
   description: string;
   profilePhoto: File;
 }>('profileWizard/setSecondStep');
+
+export const confirm = createAction<{
+  name: string;
+  email: string;
+  password: string;
+  profilePhotoUrl: string;
+  description: string;
+}>('profileWizard/confirm');
