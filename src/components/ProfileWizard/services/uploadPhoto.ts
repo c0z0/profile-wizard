@@ -9,6 +9,8 @@ const uploadPhoto = async (photo: File) => {
 
   const json = await res.json();
 
+  if (!res.ok) throw new Error(json.err as string);
+
   return json.url as string;
 };
 

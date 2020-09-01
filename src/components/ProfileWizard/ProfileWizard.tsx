@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Container,
   Typography,
@@ -9,15 +10,17 @@ import {
   Stepper,
   StepLabel,
 } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 
+import GlobalState from '../../store/GlobalState';
+import {
+  setActiveStep,
+  setFirstStep,
+  setSecondStep,
+} from './state/profileWizardSlice';
 import FirstStep from './components/FirstStep';
 import SecondStep from './components/SecondStep';
 import Summary from './components/Summary';
-import { FirstStepSchema } from './components/FirstStep/FirstStep';
-import { SecondStepInitialValues } from './components/SecondStep/SecondStep';
-import uploadPhoto from './services/uploadPhoto';
-
-type Step = 0 | 1 | 2;
 
 const STEPS = [
   'Enter a name, email, password',
@@ -41,54 +44,42 @@ const useStyles = makeStyles((theme) => ({
 
 const ProfileWizard = () => {
   const classes = useStyles();
-  const [activeStep, setActiveStep] = useState<Step>(0);
 
-  const [firstStepValues, setFirstStepValues] = useState<FirstStepSchema>({
-    name: '',
-    email: '',
-    password: '',
-  });
+  const {
+    email,
+    name,
+    password,
+    activeStep,
+    fetchingImage,
+    description,
+    profilePhoto,
+    profilePhotoUrl,
+    error,
+  } = useSelector((state: GlobalState) => state.profileWizard);
 
-  const [secondStepValues, setSecondStepValues] = useState<
-    SecondStepInitialValues & { profilePhotoUrl: string }
-  >({
-    description: '',
-    profilePhoto: null,
-    profilePhotoUrl: '',
-  });
+  const dispatch = useDispatch();
 
-  const [secondStepLoading, setSecondStepLoading] = useState(false);
+  const onBack = () => dispatch(setActiveStep(activeStep === 2 ? 1 : 0));
 
-  const getStep = (step: Step) => {
+  const getStep = (step: GlobalState['profileWizard']['activeStep']) => {
     switch (step) {
       case 0: {
         return (
           <FirstStep
             onSubmit={(v) => {
-              setActiveStep(1);
-              setFirstStepValues(v);
+              dispatch(setFirstStep(v));
             }}
-            initialValues={firstStepValues}
+            initialValues={{ email, name, password }}
           />
         );
       }
       case 1: {
         return (
           <SecondStep
-            onSubmit={async (v) => {
-              setSecondStepLoading(true);
-
-              const profilePhotoUrl = await uploadPhoto(v.profilePhoto);
-
-              setSecondStepLoading(false);
-
-              setSecondStepValues({ ...v, profilePhotoUrl });
-
-              setActiveStep(2);
-            }}
-            initialValues={secondStepValues}
-            loading={secondStepLoading}
-            onBack={() => setActiveStep(0)}
+            onSubmit={(v) => dispatch(setSecondStep(v))}
+            initialValues={{ description, profilePhoto }}
+            loading={fetchingImage}
+            onBack={onBack}
           />
         );
       }
@@ -96,9 +87,11 @@ const ProfileWizard = () => {
       case 2: {
         return (
           <Summary
-            {...firstStepValues}
-            {...secondStepValues}
-            onBack={() => setActiveStep(1)}
+            email={email}
+            name={name}
+            profilePhotoUrl={profilePhotoUrl}
+            description={description}
+            onBack={onBack}
           />
         );
       }
@@ -120,6 +113,7 @@ const ProfileWizard = () => {
             ))}
           </Stepper>
           <div className={classes.formContainer}>{getStep(activeStep)}</div>
+          {error && <Alert severity="error">{error}</Alert>}
         </CardContent>
       </Card>
     </Container>
